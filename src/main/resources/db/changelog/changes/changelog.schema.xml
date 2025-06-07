@@ -1,0 +1,25 @@
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog" logicalFilePath="path-independent" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="init-schema" author="lovanov anton">
+        <createTable tableName="todos">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_todos"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column defaultValueBoolean="false" name="completed" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" name="updated_at"
+                    type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="due_date" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,22 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: SpringToDo
+  datasource:
+    url:
+      jdbc:postgresql://localhost:5433/todo_db
+    username: local
+    password: local
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/changelog-master.xml
+    database-change-log-lock-table: LIQ_DATABASECHANGELOGLOCK
+    database-change-log-table: LIQ_DATABASECHANGELOG
+    driver-class-name: org.postgresql.Driver
+    liquibase-schema: public
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    url: ${spring.datasource.url}
