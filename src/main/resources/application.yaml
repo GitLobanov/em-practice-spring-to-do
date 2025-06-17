@@ -12,7 +12,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   liquibase:
     enabled: true
-    change-log: classpath:/db/changelog/changelog-master.xml
+    change-log: classpath:/db/changelog/db.changelog-master.xml
     database-change-log-lock-table: LIQ_DATABASECHANGELOGLOCK
     database-change-log-table: LIQ_DATABASECHANGELOG
     driver-class-name: org.postgresql.Driver

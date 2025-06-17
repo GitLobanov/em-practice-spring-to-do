@@ -2,38 +2,46 @@ package com.emobile.springtodo.controller;
 
 import com.emobile.springtodo.api.*;
 import com.emobile.springtodo.model.dto.*;
-import com.emobile.springtodo.model.mapper.*;
-import com.emobile.springtodo.repository.*;
+import com.emobile.springtodo.service.*;
 import lombok.*;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
 public class TodoController implements TodoApi {
 
-    private final TodoRepository todoRepository;
-    private final TodoMapper todoMapper;
+    private final TodoService todoService;
 
     @Override
-    public String getTodos() {
-        return "";
+    public List<TodoDto> getTodos() {
+        return List.of();
     }
 
     @Override
     public TodoDto createTodo(TodoCreateDto createTodoDto) {
-        return todoRepository.save(todoMapper.toEntity(createTodoDto))
-                .map(todoMapper::toDto)
-                .orElseThrow(() -> new IllegalArgumentException("Error in saving"));
+        return todoService.createTodo(createTodoDto);
     }
 
     @Override
-    public TodoListResponseDto getAllTodos(int page, int size) {
-        return null;
+    public TodoListResponseDto getAllTodosByUserId(int page, int size, long userId) {
+        return todoService.getAllTodosByUserId(page, size, userId);
     }
 
     @Override
     public TodoDto updateTodo(Long id, TodoUpdateDto requestDto) {
-        return null;
+        return todoService.updateTodo(id, requestDto);
+    }
+
+    @Override
+    public void completeTodo(Long id) {
+        todoService.completeTodo(id);
+    }
+
+    @Override
+    public void incompleteTodo(Long id) {
+        todoService.incompleteTodo(id);
     }
 
     @Override
@@ -43,6 +51,6 @@ public class TodoController implements TodoApi {
 
     @Override
     public void deleteTodoById(Long id) {
-
+        todoService.deleteTodo(id);
     }
 }

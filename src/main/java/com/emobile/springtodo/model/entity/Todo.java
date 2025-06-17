@@ -23,6 +23,8 @@ public class Todo {
 
     private Long id;
 
+    private Long userId;
+
     private String title;
 
     private String description;
