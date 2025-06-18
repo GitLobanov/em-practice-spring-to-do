@@ -1,5 +1,6 @@
 package com.emobile.springtodo.model.entity;
 
+
 import lombok.*;
 
 import java.time.*;
@@ -8,14 +9,10 @@ import java.time.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Todo {
+public class Tag {
 
     private Long id;
-    private Long userId;
     private String title;
     private String description;
-    private boolean completed;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private LocalDateTime dueDate;
 }

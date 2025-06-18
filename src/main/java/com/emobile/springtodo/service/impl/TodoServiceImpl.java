@@ -16,6 +16,7 @@ import java.util.*;
 public class TodoServiceImpl implements TodoService {
 
     private final TodoRepository todoRepository;
+    private final TagRepository tagRepository;
     private final TodoMapper todoMapper;
     // TODO fix in next versions
     private final Long USE_FAKE_USER_ID = 1L;
@@ -57,6 +58,16 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
+    public void appendTagTodo(Long todoId, Long tagId) {
+        tagRepository.appendTagToTodo(todoId, tagId);
+    }
+
+    @Override
+    public void removeTagTodo(Long todoId, Long tagId) {
+        tagRepository.removeTagForTodo(todoId, tagId);
+    }
+
+    @Override
     public Todo getTodoById(Long id) {
         return null;
     }
@@ -65,5 +76,10 @@ public class TodoServiceImpl implements TodoService {
     public TodoListResponseDto getAllTodosByUserId(int page, int size, long userId) {
         List<Todo> allByUserId = todoRepository.findAllByUserId(size, page * size, USE_FAKE_USER_ID);
         return todoMapper.toListResponseDto(allByUserId, todoRepository.count(), page, size);
+    }
+
+    @Override
+    public TodoListResponseDto getAllTodosByTagId(int page, int size, long tagId) {
+        return null;
     }
 }

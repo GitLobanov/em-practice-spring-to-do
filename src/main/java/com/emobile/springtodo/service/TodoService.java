@@ -15,6 +15,9 @@ public interface TodoService {
     void deleteTodo (Long id);
     void completeTodo (Long id);
     void incompleteTodo (Long id);
+    void appendTagTodo (Long todoId, Long tagId);
+    void removeTagTodo (Long todoId, Long tagId);
     Todo getTodoById (Long id);
     TodoListResponseDto getAllTodosByUserId (int page, int size, long userId);
+    TodoListResponseDto getAllTodosByTagId (int page, int size, long tagId);
 }

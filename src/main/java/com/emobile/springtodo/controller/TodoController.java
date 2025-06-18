@@ -15,11 +15,6 @@ public class TodoController implements TodoApi {
     private final TodoService todoService;
 
     @Override
-    public List<TodoDto> getTodos() {
-        return List.of();
-    }
-
-    @Override
     public TodoDto createTodo(TodoCreateDto createTodoDto) {
         return todoService.createTodo(createTodoDto);
     }

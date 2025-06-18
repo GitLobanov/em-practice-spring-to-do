@@ -1,11 +1,11 @@
 package com.emobile.springtodo.model.dto;
 
-import java.util.*;
+import java.time.*;
 
-public record TodoDto(
+public record TagDto (
         Long id,
-        List<TagDto> tags,
         String title,
         String description,
-        boolean completed) {
+        LocalDateTime createdAt
+) {
 }

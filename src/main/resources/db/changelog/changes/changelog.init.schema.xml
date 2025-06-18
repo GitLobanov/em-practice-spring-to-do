@@ -1,8 +1,13 @@
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog" logicalFilePath="path-independent"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog" logicalFilePath="db/changelog/changes/changelog.init.schema.xml"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
     <changeSet id="init-table-users" author="lovanov anton">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users"/>
+            </not>
+        </preConditions>
         <createTable tableName="users">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
@@ -29,6 +34,12 @@
     </changeSet>
 
     <changeSet id="init-table-todos" author="lovanov anton">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="users"/>
+            <not>
+                <tableExists tableName="todos"/>
+            </not>
+        </preConditions>
         <createTable tableName="todos">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_todos"/>
@@ -51,6 +62,48 @@
                 <constraints nullable="false"/>
             </column>
             <column name="due_date" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="init-table-tags" author="lovanov anton">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="tags"/>
+            </not>
+        </preConditions>
+        <createTable tableName="tags">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_tags"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="init-table-todo_tags" author="lovanov anton">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="todos"/>
+            <tableExists tableName="tags"/>
+            <not>
+                <tableExists tableName="todo_tags"/>
+            </not>
+        </preConditions>
+        <createTable tableName="todo_tags">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_todo_tags"/>
+            </column>
+            <column autoIncrement="true" name="todo_id" type="BIGINT">
+                <constraints foreignKeyName="fk_todo_tags_todos" referencedTableName="todos"
+                             referencedColumnNames="id"/>
+            </column>
+            <column autoIncrement="true" name="tag_id" type="BIGINT">
+                <constraints foreignKeyName="fk_todo_tags_tags" referencedTableName="tags" referencedColumnNames="id"/>
+            </column>
         </createTable>
     </changeSet>
 </databaseChangeLog>

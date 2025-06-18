@@ -33,7 +33,6 @@ public class TodoRepositoryJdbc implements TodoRepository {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(TODO_INSERT_ALL, new String[]{"id"});
             ps.setLong(1, todo.getUserId());
-            ps.setLong(1, todo.getUserId());
             ps.setString(2, todo.getTitle());
             ps.setString(3, todo.getDescription());
             ps.setBoolean(4, todo.isCompleted());
@@ -136,6 +135,17 @@ public class TodoRepositoryJdbc implements TodoRepository {
                 TODO_SELECT_BY_USER_ID,
                 new TodoRowMapper(),
                 userId,
+                limit,
+                offset
+        );
+    }
+
+    @Override
+    public List<Todo> findAllByTagId(int limit, int offset, long tagId) {
+        return jdbcTemplate.query(
+                TODO_SELECT_BY_USER_ID,
+                new TodoRowMapper(),
+                tagId,
                 limit,
                 offset
         );
