@@ -10,4 +10,5 @@ public interface TagService {
     TagDto getById (Long id);
     void appendTagTodo (Long todoId, Long tagId);
     void removeTagTodo (Long todoId, Long tagId);
+    TagListResponseDto getAllTags();
 }

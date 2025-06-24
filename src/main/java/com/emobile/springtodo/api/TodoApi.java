@@ -20,8 +20,7 @@ public interface TodoApi {
                            @Valid @RequestBody TodoUpdateDto requestDto);
 
     @GetMapping("/{id}")
-    TodoDto getTodoById(@Parameter(description = "ID of the task to retrieve") @PathVariable Long id);
-
+    TodoDto getTodoById(@Parameter(description = "ID of the task to retrieve") @PathVariable (value = "id") Long id);
 
     @DeleteMapping("/{id}")
     @ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
@@ -29,11 +28,8 @@ public interface TodoApi {
 
     @GetMapping("/user/{userId}")
     TodoListResponseDto getAllTodosByUserId(
-            @Parameter(description = "Page number, starts from 0", required = true)
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @Parameter(description = "Size of the page, defaults to 10", required = true)
-            @RequestParam(value = "size", defaultValue = "10") int size,
-            @PathVariable @Parameter(description = "ID of the user to retrieve tasks for") long userId
+            @PathVariable (value = "userId")
+            Long userId
     );
 
     @PutMapping("/{id}/complete")

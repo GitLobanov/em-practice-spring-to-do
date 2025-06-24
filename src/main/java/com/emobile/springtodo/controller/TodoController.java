@@ -6,8 +6,6 @@ import com.emobile.springtodo.service.*;
 import lombok.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
-
 @RestController
 @RequiredArgsConstructor
 public class TodoController implements TodoApi {
@@ -20,8 +18,8 @@ public class TodoController implements TodoApi {
     }
 
     @Override
-    public TodoListResponseDto getAllTodosByUserId(int page, int size, long userId) {
-        return todoService.getAllTodosByUserId(page, size, userId);
+    public TodoListResponseDto getAllTodosByUserId(Long userId) {
+        return todoService.getAllTodosByUserId(userId);
     }
 
     @Override
@@ -41,7 +39,7 @@ public class TodoController implements TodoApi {
 
     @Override
     public TodoDto getTodoById(Long id) {
-        return null;
+        return todoService.getTodoById(id);
     }
 
     @Override

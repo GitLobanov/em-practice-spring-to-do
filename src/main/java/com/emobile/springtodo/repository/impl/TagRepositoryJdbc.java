@@ -17,8 +17,10 @@ import static com.emobile.springtodo.repository.sql.TagSqlUtil.TAG_DELETE_BY_ID;
 import static com.emobile.springtodo.repository.sql.TagSqlUtil.TAG_DELETE_FROM_TODO;
 import static com.emobile.springtodo.repository.sql.TagSqlUtil.TAG_INSERT_ALL;
 import static com.emobile.springtodo.repository.sql.TagSqlUtil.TAG_INSERT_GROUP_TAGS;
+import static com.emobile.springtodo.repository.sql.TagSqlUtil.TAG_SELECT_ALL;
 import static com.emobile.springtodo.repository.sql.TagSqlUtil.TAG_SELECT_BY_ID;
-import static com.emobile.springtodo.repository.sql.TodoSqlUtil.TODO_SELECT_BY_ID;
+import static com.emobile.springtodo.repository.sql.TagSqlUtil.TAG_SELECT_BY_TODO_ID;
+import static com.emobile.springtodo.repository.sql.TagSqlUtil.TAG_UPDATE_ALL;
 
 @Repository
 @RequiredArgsConstructor
@@ -60,14 +62,12 @@ public class TagRepositoryJdbc implements TagRepository {
     }
 
     @Override
-    public Optional<Tag> update(Tag todo) {
-        LocalDateTime now = LocalDateTime.now();
-
+    public Optional<Tag> update(Long idTag, Tag todo) {
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(TAG_INSERT_ALL, new String[]{"id"});
+            PreparedStatement ps = connection.prepareStatement(TAG_UPDATE_ALL);
             ps.setString(1, todo.getTitle());
             ps.setString(2, todo.getDescription());
-            ps.setTimestamp(3, Timestamp.valueOf(now));
+            ps.setLong(3, idTag);
             return ps;
         });
 
@@ -97,6 +97,23 @@ public class TagRepositoryJdbc implements TagRepository {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public List<Tag> findByTodoId(Long todoId) {
+        return jdbcTemplate.query(
+                TAG_SELECT_BY_TODO_ID,
+                new TagRowMapper(),
+                todoId
+        );
+    }
+
+    @Override
+    public List<Tag> findAll() {
+        return jdbcTemplate.query(
+                TAG_SELECT_ALL,
+                new TagRowMapper()
+        );
     }
 
     /**

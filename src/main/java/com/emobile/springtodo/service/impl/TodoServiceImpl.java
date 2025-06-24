@@ -37,6 +37,10 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public TodoDto updateTodo(Long id, TodoUpdateDto requestDto) {
+        if (!todoRepository.existsById(id)) {
+            throw new TodoNotFoundException("Todo not found with id: " + id);
+        }
+
         return todoRepository.update(todoMapper.toEntity(requestDto, id))
                 .map(todoMapper::toDto)
                 .orElseThrow(() -> new TodoRepositoryException("Error in updating"));
@@ -68,14 +72,20 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public Todo getTodoById(Long id) {
-        return null;
+    public TodoDto getTodoById(Long id) {
+        return todoRepository.findByID(id)
+                .map(todoMapper::toDto)
+                .orElseThrow(() -> new TodoNotFoundException("Todo not found"));
     }
 
     @Override
-    public TodoListResponseDto getAllTodosByUserId(int page, int size, long userId) {
-        List<Todo> allByUserId = todoRepository.findAllByUserId(size, page * size, USE_FAKE_USER_ID);
-        return todoMapper.toListResponseDto(allByUserId, todoRepository.count(), page, size);
+    public TodoListResponseDto getAllTodosByUserId(long userId) {
+        List<Todo> allByUserId = todoRepository.findAllByUserId(userId);
+        List<TodoDto> list = allByUserId.stream()
+                .map(todo ->
+                    todoMapper.toDtoWithTags(todo, tagRepository.findByTodoId(todo.getId())))
+                .toList();
+        return new TodoListResponseDto (list, list.size());
     }
 
     @Override

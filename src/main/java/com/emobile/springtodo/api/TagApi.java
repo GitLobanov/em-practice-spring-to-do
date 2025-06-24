@@ -26,13 +26,16 @@ public interface TagApi {
     @GetMapping("/{id}")
     TagDto getTagById(@Parameter(description = "ID of the tag to retrieve") @PathVariable Long id);
 
-    @PutMapping("/{id}/tag/{tagId}")
-    void appendTagForTodo(
-            @PathVariable @Parameter(description = "ID of the task to append") Long id,
-            @PathVariable @Parameter(description = "ID of the tag to append to the task") Long tagId);
+    @GetMapping("/")
+    TagListResponseDto getAllTags();
 
-    @DeleteMapping("/{id}/tag/{tagId}")
+    @PutMapping("/{tagId}/tag/{todoId}")
+    void appendTagForTodo(
+            @PathVariable @Parameter(description = "ID of the task to append") Long tagId,
+            @PathVariable @Parameter(description = "ID of the tag to append to the task") Long todoId);
+
+    @DeleteMapping("/{tagId}/tag/{todoId}")
     void removeTagForTodo(
-            @PathVariable @Parameter(description = "ID of the task to append") Long id,
-            @PathVariable @Parameter(description = "ID of the tag to append to the task") Long tagId);
+            @PathVariable @Parameter(description = "ID of the tag to delete from the task") Long tagId,
+            @PathVariable @Parameter(description = "ID of the task") Long todoId);
 }

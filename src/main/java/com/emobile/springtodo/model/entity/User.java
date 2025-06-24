@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.time.*;
 
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor

@@ -4,6 +4,8 @@ import com.emobile.springtodo.model.dto.*;
 import com.emobile.springtodo.model.entity.*;
 import org.mapstruct.*;
 
+import java.util.*;
+
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface TagMapper {
 
@@ -11,4 +13,5 @@ public interface TagMapper {
     Tag toEntity(TagCreateDto tagDto);
     Tag toEntity(TagUpdateDto tagDto);
     TagDto toTagDto(Tag tag);
+    List<TagDto> toListDto (List<Tag> tags);
 }

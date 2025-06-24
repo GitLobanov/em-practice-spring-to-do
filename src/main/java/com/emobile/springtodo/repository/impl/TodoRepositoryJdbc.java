@@ -15,8 +15,10 @@ import java.util.*;
 
 import static com.emobile.springtodo.repository.sql.TodoSqlUtil.TODO_DELETE_BY_ID;
 import static com.emobile.springtodo.repository.sql.TodoSqlUtil.TODO_INSERT_ALL;
+import static com.emobile.springtodo.repository.sql.TodoSqlUtil.TODO_SELECT_ALL;
 import static com.emobile.springtodo.repository.sql.TodoSqlUtil.TODO_SELECT_BY_ID;
 import static com.emobile.springtodo.repository.sql.TodoSqlUtil.TODO_SELECT_BY_USER_ID;
+import static com.emobile.springtodo.repository.sql.TodoSqlUtil.TODO_SELECT_EXIST_BY_ID;
 import static com.emobile.springtodo.repository.sql.TodoSqlUtil.TODO_UPDATE_ALL;
 
 @RequiredArgsConstructor
@@ -31,7 +33,7 @@ public class TodoRepositoryJdbc implements TodoRepository {
         LocalDateTime now = LocalDateTime.now();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(TODO_INSERT_ALL, new String[]{"id"});
+            PreparedStatement ps = connection.prepareStatement(TODO_INSERT_ALL, Statement.RETURN_GENERATED_KEYS);
             ps.setLong(1, todo.getUserId());
             ps.setString(2, todo.getTitle());
             ps.setString(3, todo.getDescription());
@@ -53,8 +55,7 @@ public class TodoRepositoryJdbc implements TodoRepository {
             generatedIdNum = (Number) keys.get("id");
         } else if (keyHolder.getKey() != null) {
             generatedIdNum = keyHolder.getKey();
-        }
-        else {
+        } else {
             throw new TodoRepositoryException("Failed to retrieve generated ID for Todo.");
         }
 
@@ -95,7 +96,7 @@ public class TodoRepositoryJdbc implements TodoRepository {
     public void deleteByID(Long id) {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(TODO_DELETE_BY_ID);
-            ps.setLong(6, id);
+            ps.setLong(1, id);
             return ps;
         });
     }
@@ -125,18 +126,19 @@ public class TodoRepositoryJdbc implements TodoRepository {
     }
 
     @Override
-    public List<Todo> findAll(int limit, int offset) {
-        return List.of();
+    public List<Todo> findAll() {
+        return jdbcTemplate.query(
+                TODO_SELECT_ALL,
+                new TodoRowMapper()
+        );
     }
 
     @Override
-    public List<Todo> findAllByUserId(int limit, int offset, long userId) {
+    public List<Todo> findAllByUserId(long userId) {
         return jdbcTemplate.query(
                 TODO_SELECT_BY_USER_ID,
                 new TodoRowMapper(),
-                userId,
-                limit,
-                offset
+                userId
         );
     }
 
@@ -154,6 +156,17 @@ public class TodoRepositoryJdbc implements TodoRepository {
     @Override
     public long count() {
         return 0;
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return Boolean.TRUE.equals(
+                jdbcTemplate.query(
+                        TODO_SELECT_EXIST_BY_ID,
+                        new SingleColumnRowMapper<>(Boolean.class),
+                        id
+                ).stream().findFirst().orElse(false)
+        );
     }
 
     /**

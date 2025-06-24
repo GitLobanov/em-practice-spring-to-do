@@ -12,9 +12,9 @@ public interface TodoRepository {
     void completeById(Long id);
     void incompleteById(Long id);
     Optional<Todo> findByID(Long id);
-    List<Todo> findAll(int limit, int offset);
-    List<Todo> findAllByUserId(int limit, int offset, long userId);
+    List<Todo> findAll();
+    List<Todo> findAllByUserId(long userId);
     List<Todo> findAllByTagId(int limit, int offset, long tagId);
     long count();
-
+    boolean existsById(Long id);
 }

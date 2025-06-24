@@ -7,6 +7,8 @@ import com.emobile.springtodo.service.*;
 import lombok.*;
 import org.springframework.stereotype.*;
 
+import java.util.*;
+
 @Service
 @AllArgsConstructor
 public class TagServiceImpl implements TagService {
@@ -23,7 +25,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDto updateTodo(Long id, TagUpdateDto requestDto) {
-        return tagRepository.save(tagMapper.toEntity(requestDto))
+        return tagRepository.update(id, tagMapper.toEntity(requestDto))
                 .map(tagMapper::toTagDto)
                 .orElseThrow(() -> new RuntimeException("Failed to create tag"));
     }
@@ -48,5 +50,11 @@ public class TagServiceImpl implements TagService {
     @Override
     public void removeTagTodo(Long todoId, Long tagId) {
         tagRepository.removeTagForTodo(todoId, tagId);
+    }
+
+    @Override
+    public TagListResponseDto getAllTags() {
+        List<TagDto> tags = tagMapper.toListDto(tagRepository.findAll());
+        return new TagListResponseDto(tags, tags.size());
     }
 }

@@ -10,6 +10,8 @@ import java.util.*;
 public interface TodoMapper {
 
     TodoDto toDto(Todo todo);
+    @Mapping(target = "tags", source = "tags")
+    TodoDto toDtoWithTags(Todo todo, List<Tag> tags);
     TodoListResponseDto toListResponseDto(List<Todo> todos, long total, int limit, int offset);
 
     @Mapping(target = "id", ignore = true)

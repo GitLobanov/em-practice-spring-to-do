@@ -34,12 +34,17 @@ public class TagController implements TagApi {
     }
 
     @Override
-    public void appendTagForTodo(Long id, Long tagId) {
-        tagService.appendTagTodo(id, tagId);
+    public TagListResponseDto getAllTags() {
+        return tagService.getAllTags();
     }
 
     @Override
-    public void removeTagForTodo(Long id, Long tagId) {
-        tagService.removeTagTodo(id, tagId);
+    public void appendTagForTodo(Long tagId, Long todoId) {
+        tagService.appendTagTodo(todoId, tagId);
+    }
+
+    @Override
+    public void removeTagForTodo(Long tagId, Long todoId) {
+        tagService.removeTagTodo(tagId, todoId);
     }
 }
