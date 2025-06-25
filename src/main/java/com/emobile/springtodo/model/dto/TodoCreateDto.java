@@ -5,6 +5,7 @@ import lombok.*;
 
 @Builder
 public record TodoCreateDto(
+        @NotNull
         Long userId,
         @NotBlank
         String title,

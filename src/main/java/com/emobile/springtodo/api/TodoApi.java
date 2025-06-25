@@ -6,6 +6,7 @@ import jakarta.validation.*;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 
 @RequestMapping("/api/v1/todos")
@@ -23,7 +24,7 @@ public interface TodoApi {
     TodoDto getTodoById(@Parameter(description = "ID of the task to retrieve") @PathVariable (value = "id") Long id);
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
+    @ResponseStatus(NO_CONTENT)
     void deleteTodoById(@Parameter(description = "ID of the TODO item to delete") @PathVariable Long id);
 
     @GetMapping("/user/{userId}")
@@ -32,10 +33,12 @@ public interface TodoApi {
             Long userId
     );
 
-    @PutMapping("/{id}/complete")
+    @PatchMapping("/complete/{id}")
+    @ResponseStatus(NO_CONTENT)
     void completeTodo(@Parameter(description = "ID of the task to complete") @PathVariable Long id);
 
-    @PutMapping("/{id}/incomplete")
+    @PatchMapping("/incomplete/{id}")
+    @ResponseStatus(NO_CONTENT)
     void incompleteTodo(@Parameter(description = "ID of the task to mark incomplete") @PathVariable Long id);
 
 }

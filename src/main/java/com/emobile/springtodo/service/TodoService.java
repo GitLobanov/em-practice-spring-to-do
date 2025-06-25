@@ -18,5 +18,5 @@ public interface TodoService {
     void removeTagTodo (Long todoId, Long tagId);
     TodoDto getTodoById (Long id);
     TodoListResponseDto getAllTodosByUserId (long userId);
-    TodoListResponseDto getAllTodosByTagId (int page, int size, long tagId);
+    TodoListResponseDto getAllTodosByTagId (long tagId);
 }

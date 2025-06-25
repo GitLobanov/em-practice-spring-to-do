@@ -1,6 +1,5 @@
 package com.emobile.springtodo.repository.sql;
 
-import liquibase.util.*;
 import lombok.experimental.*;
 
 @UtilityClass
@@ -31,8 +30,10 @@ public class TodoSqlUtil {
 
     public static final String TODO_SELECT_BY_ID = String.format(WITH_TAGS_SELECT, "WHERE todos.id = ?");
     public static final String TODO_SELECT_BY_USER_ID = String.format(WITH_TAGS_SELECT, "WHERE user_id = ?");
+    public static final String TODO_SELECT_BY_TAG_ID = String.format(WITH_TAGS_SELECT, "WHERE tags.id = ?");
     public static final String TODO_SELECT_ALL = String.format(WITH_TAGS_SELECT, "");
     public static final String TODO_SELECT_EXIST_BY_ID = "SELECT EXISTS(SELECT 1 FROM todos WHERE id = ?)";
+    public static final String TODO_SELECT_BY_COMPLETED = "SELECT COUNT(*) FROM todos WHERE completed = ?";
 
     public static final String TODO_INSERT_ALL = """
                 INSERT INTO todos (user_id, title, description, completed, created_at, updated_at, due_date)

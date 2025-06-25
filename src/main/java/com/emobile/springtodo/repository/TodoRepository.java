@@ -14,7 +14,8 @@ public interface TodoRepository {
     Optional<Todo> findByID(Long id);
     List<Todo> findAll();
     List<Todo> findAllByUserId(long userId);
-    List<Todo> findAllByTagId(int limit, int offset, long tagId);
+    List<Todo> findAllByTagId(long tagId);
     long count();
     boolean existsById(Long id);
+    long countByCompleted(boolean completed);
 }

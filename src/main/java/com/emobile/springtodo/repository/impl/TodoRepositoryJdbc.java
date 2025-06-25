@@ -16,6 +16,7 @@ import java.util.*;
 import static com.emobile.springtodo.repository.sql.TodoSqlUtil.TODO_DELETE_BY_ID;
 import static com.emobile.springtodo.repository.sql.TodoSqlUtil.TODO_INSERT_ALL;
 import static com.emobile.springtodo.repository.sql.TodoSqlUtil.TODO_SELECT_ALL;
+import static com.emobile.springtodo.repository.sql.TodoSqlUtil.TODO_SELECT_BY_COMPLETED;
 import static com.emobile.springtodo.repository.sql.TodoSqlUtil.TODO_SELECT_BY_ID;
 import static com.emobile.springtodo.repository.sql.TodoSqlUtil.TODO_SELECT_BY_USER_ID;
 import static com.emobile.springtodo.repository.sql.TodoSqlUtil.TODO_SELECT_EXIST_BY_ID;
@@ -143,13 +144,11 @@ public class TodoRepositoryJdbc implements TodoRepository {
     }
 
     @Override
-    public List<Todo> findAllByTagId(int limit, int offset, long tagId) {
+    public List<Todo> findAllByTagId(long tagId) {
         return jdbcTemplate.query(
                 TODO_SELECT_BY_USER_ID,
                 new TodoRowMapper(),
-                tagId,
-                limit,
-                offset
+                tagId
         );
     }
 
@@ -167,6 +166,12 @@ public class TodoRepositoryJdbc implements TodoRepository {
                         id
                 ).stream().findFirst().orElse(false)
         );
+    }
+
+    @Override
+    public long countByCompleted(boolean completed) {
+        Long count = jdbcTemplate.queryForObject(TODO_SELECT_BY_COMPLETED, Long.class, completed);
+        return (count != null) ? count : 0L;
     }
 
     /**

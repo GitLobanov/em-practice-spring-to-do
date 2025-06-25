@@ -7,6 +7,7 @@ import com.emobile.springtodo.model.mapper.*;
 import com.emobile.springtodo.repository.*;
 import com.emobile.springtodo.service.*;
 import lombok.*;
+import org.springframework.cache.annotation.*;
 import org.springframework.stereotype.*;
 
 import java.util.*;
@@ -18,29 +19,27 @@ public class TodoServiceImpl implements TodoService {
     private final TodoRepository todoRepository;
     private final TagRepository tagRepository;
     private final TodoMapper todoMapper;
-    // TODO fix in next versions
-    private final Long USE_FAKE_USER_ID = 1L;
 
     @Override
     public List<TodoDto> getTodos() {
-        return List.of();
+        return todoRepository.findAll()
+                .stream().map(todoMapper::toDto)
+                .toList();
     }
 
     @Override
+    @CacheEvict(value = "todoList", key = "#createTodoDto.userId")
     public TodoDto createTodo(TodoCreateDto createTodoDto) {
         Todo entity = todoMapper.toEntity(createTodoDto);
-        entity.setUserId(USE_FAKE_USER_ID);
         return todoRepository.save(entity)
                 .map(todoMapper::toDto)
                 .orElseThrow(() -> new IllegalArgumentException("Error in saving"));
     }
 
     @Override
+    @CacheEvict(value = "todo", key = "#id")
     public TodoDto updateTodo(Long id, TodoUpdateDto requestDto) {
-        if (!todoRepository.existsById(id)) {
-            throw new TodoNotFoundException("Todo not found with id: " + id);
-        }
-
+        validateTodoById(id);
         return todoRepository.update(todoMapper.toEntity(requestDto, id))
                 .map(todoMapper::toDto)
                 .orElseThrow(() -> new TodoRepositoryException("Error in updating"));
@@ -48,16 +47,19 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public void deleteTodo(Long id) {
+        validateTodoById(id);
         todoRepository.deleteByID(id);
     }
 
     @Override
     public void completeTodo(Long id) {
+        validateTodoById(id);
         todoRepository.completeById(id);
     }
 
     @Override
     public void incompleteTodo(Long id) {
+        validateTodoById(id);
         todoRepository.incompleteById(id);
     }
 
@@ -72,6 +74,7 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
+    @Cacheable(value = "todo", key = "#id")
     public TodoDto getTodoById(Long id) {
         return todoRepository.findByID(id)
                 .map(todoMapper::toDto)
@@ -79,6 +82,7 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
+    @Cacheable(value = "todoList", key = "#userId")
     public TodoListResponseDto getAllTodosByUserId(long userId) {
         List<Todo> allByUserId = todoRepository.findAllByUserId(userId);
         List<TodoDto> list = allByUserId.stream()
@@ -89,7 +93,16 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public TodoListResponseDto getAllTodosByTagId(int page, int size, long tagId) {
-        return null;
+    @Cacheable(value = "todoList", key = "#tagId")
+    public TodoListResponseDto getAllTodosByTagId(long tagId) {
+        List<TodoDto> list = todoRepository.findAllByTagId(tagId)
+                .stream().map(todoMapper::toDto).toList();
+        return new TodoListResponseDto (list, list.size());
+    }
+
+    void validateTodoById (Long id) {
+        if (!todoRepository.existsById(id)) {
+            throw new TodoNotFoundException("Todo not found with id: " + id);
+        }
     }
 }
