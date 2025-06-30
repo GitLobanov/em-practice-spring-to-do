@@ -1,6 +1,7 @@
 package com.emobile.springtodo.config;
 
 import com.emobile.springtodo.model.dto.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.autoconfigure.cache.*;
 import org.springframework.cache.*;
 import org.springframework.context.annotation.*;
@@ -14,9 +15,14 @@ import org.springframework.data.redis.serializer.*;
 @Configuration
 public class RedisConfig {
 
+    @Value("${spring.data.redis.host}")
+    private String redisHost;
+    @Value("${spring.data.redis.port}")
+    private int redisPort;
+
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory("localhost", 6379);
+        return new LettuceConnectionFactory(redisHost, redisPort);
     }
 
     @Bean
